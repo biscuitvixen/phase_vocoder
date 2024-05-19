@@ -7,6 +7,7 @@
 
 // Constants
 const double PI = 3.14159265358979323846;
+const int16_t MAX_INT16 = 32767;
 
 // Type alias for complex numbers
 using Complex = std::complex<double>;
@@ -116,9 +117,9 @@ std::vector<double> phase_vocoder(const std::vector<double>& signal, double time
 // Function to read audio data from standard input
 std::vector<double> readAudioData() {
     std::vector<double> data;
-    float sample;
+    int16_t sample;
     while (std::cin.read(reinterpret_cast<char*>(&sample), sizeof(sample))) {
-        data.push_back(static_cast<double>(sample));
+        data.push_back(static_cast<double>(sample) / MAX_INT16);
     }
     return data;
 }
@@ -126,7 +127,7 @@ std::vector<double> readAudioData() {
 // Function to write audio data to standard output
 void writeAudioData(const std::vector<double>& data) {
     for (double sample : data) {
-        float output_sample = static_cast<float>(sample);
+        int16_t output_sample = static_cast<int16_t>(std::clamp(sample, -1.0, 1.0) * MAX_INT16);
         std::cout.write(reinterpret_cast<const char*>(&output_sample), sizeof(output_sample));
     }
 }
