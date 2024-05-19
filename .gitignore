@@ -1,6 +1,9 @@
 # Virtual Environment
 ENV/
 
+# Test data
+test_data/
+
 # Prerequisites
 *.d
 
