@@ -18,10 +18,16 @@ def stream_audio_to_vocoder(wav_file, vocoder_executable):
                 break
 
             if num_channels > 1:
-                frames = struct.unpack('<' + 'h' * (len(frames) // (sampwidth // 2)), frames)
-                frames = frames[::num_channels]  # Extract left channel
+                # Calculate the number of samples per frame
+                num_samples = len(frames) // (sampwidth * num_channels)
+                # Unpack frames as signed integers ('h' for 2-byte samples)
+                format_string = '<' + 'h' * num_samples * num_channels
+                unpacked_frames = struct.unpack(format_string, frames)
+                # Extract one channel (e.g., left channel)
+                frames = unpacked_frames[::num_channels]
+                # Re-pack the extracted channel frames
                 frames = struct.pack('<' + 'h' * len(frames), *frames)
-
+            
             process.stdin.write(frames)
         
         # Close stdin to indicate end of input
