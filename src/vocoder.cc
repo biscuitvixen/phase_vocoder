@@ -4,6 +4,7 @@
 #include <complex>
 #include <valarray>
 #include <algorithm>
+#include <cstdlib>
 
 // Constants
 const double PI = 3.14159265358979323846;
@@ -84,7 +85,7 @@ std::vector<double> istft(const std::vector<CArray>& stft_frames, size_t window_
 }
 
 // Phase Vocoder
-std::vector<double> phase_vocoder(const std::vector<double>& signal, double time_stretch) {
+std::vector<double> phase_vocoder(const std::vector<double>& signal, double time_stretch, int sample_rate) {
     const size_t window_size = 1024;
     const size_t hop_size = window_size / 4;
 
@@ -132,7 +133,14 @@ void writeAudioData(const std::vector<double>& data) {
     }
 }
 
-int main() {
+int main(int argc, char* argv[]) {
+    if (argc < 2) {
+        std::cerr << "Usage: " << argv[0] << " <sample_rate>" << std::endl;
+        return 1;
+    }
+    
+    int sample_rate = std::atoi(argv[1]);
+
     // Read audio data
     std::vector<double> inputData = readAudioData();
 
@@ -140,7 +148,7 @@ int main() {
     double time_stretch = 1.5;
 
     // Process data with phase vocoder
-    std::vector<double> outputData = phase_vocoder(inputData, time_stretch);
+    std::vector<double> outputData = phase_vocoder(inputData, time_stretch, sample_rate);
 
     // Write processed data
     writeAudioData(outputData);
