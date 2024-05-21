@@ -1,6 +1,6 @@
 # Variables
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -O2
+CXXFLAGS = -std=c++20 -Wall -O2
 TARGET = vocoder
 SRC_DIR = src
 SRC = $(SRC_DIR)/vocoder.cc
